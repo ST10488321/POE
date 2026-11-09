@@ -1,0 +1,7 @@
+@model string
+@{ ViewData["Title"] = "Oops"; }
+<div class="card p-4 text-center">
+    <h2><i class="bi bi-exclamation-triangle text-warning"></i> We hit a snag</h2>
+    <p class="lead">@Model</p>
+    <div><a class="btn btn-rd" href="javascript:history.back()">Go back</a> <a class="btn btn-outline-rd" asp-controller="Home" asp-action="Index">Home</a></div>
+</div>

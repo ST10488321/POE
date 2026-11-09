@@ -1,0 +1,30 @@
+@model List<EnrolmentModel>
+@{ ViewData["Title"] = "My events"; }
+<h1 class="page-title">My events</h1>
+@if (!Model.Any())
+{
+    <div class="card p-5 text-center"><p class="text-muted">You have not entered any events yet.</p><div><a class="btn btn-rd" asp-action="Home">Browse events</a></div></div>
+}
+else
+{
+    <div class="card p-2"><div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+        <thead><tr><th>Event</th><th>Category</th><th>Entered on</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var e in Model)
+        {
+            <tr>
+                <td><a asp-action="Details" asp-route-id="@e.EventId" class="fw-bold text-decoration-none">@e.EventName</a></td>
+                <td>@e.CategoryName</td>
+                <td>@e.EnrolledAt.ToString("dd MMM yyyy")</td>
+                <td><partial name="_StatusBadge" model="e.Status" /></td>
+                <td class="text-end">
+                    <form asp-action="CancelEnrolment" asp-route-id="@e.Id" method="post" onsubmit="return confirm('Cancel your entry?');">
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Cancel entry</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table></div></div>
+}

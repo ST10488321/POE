@@ -1,0 +1,11 @@
+# Starts the MVC front end in Docker. The Part 2 API runs on your machine (see README).
+services:
+  mvc:
+    build: ./RaceDay.Mvc
+    image: raceday-mvc
+    ports:
+      - "8080:8080"
+    environment:
+      ApiBaseUrl: http://host.docker.internal:5080
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

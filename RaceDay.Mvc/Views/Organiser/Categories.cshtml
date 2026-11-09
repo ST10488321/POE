@@ -1,0 +1,37 @@
+@model CategoriesPageViewModel
+@{ ViewData["Title"] = "Categories"; }
+<h1 class="page-title">Categories - @Model.Event.Name</h1>
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card p-3">
+            <h3>Current categories</h3>
+            @if (Model.Event.Categories is null || !Model.Event.Categories.Any()) { <p class="text-muted mb-0">No categories yet. Add age groups or distances, e.g. "Under 20", "Senior", "10km", "21km".</p> }
+            else
+            {
+                <ul class="list-group list-group-flush">
+                @foreach (var c in Model.Event.Categories)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div><strong>@c.Name</strong>@if (!string.IsNullOrEmpty(c.Description)) { <br /><small class="text-muted">@c.Description</small> }</div>
+                        <form asp-action="DeleteCategory" asp-route-id="@c.Id" asp-route-eventId="@Model.Event.Id" method="post" onsubmit="return confirm('Delete this category?');">
+                            <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </li>
+                }
+                </ul>
+            }
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card p-3">
+            <h3>Add a category</h3>
+            <form asp-action="AddCategory" method="post">
+                <input type="hidden" asp-for="Form.EventId" />
+                <div class="mb-3"><label asp-for="Form.Name" class="form-label">Name</label><input asp-for="Form.Name" class="form-control" placeholder="e.g. Under 20, 10km" required /></div>
+                <div class="mb-3"><label asp-for="Form.Description" class="form-label">Description (optional)</label><input asp-for="Form.Description" class="form-control" /></div>
+                <button class="btn btn-rd" type="submit"><i class="bi bi-plus-lg"></i> Add category</button>
+            </form>
+        </div>
+        <a class="btn btn-outline-rd mt-3" asp-action="Events">Back to events</a>
+    </div>
+</div>

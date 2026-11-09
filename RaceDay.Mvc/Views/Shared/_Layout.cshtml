@@ -1,0 +1,87 @@
+@{
+    var role = Context.Session.GetString(SessionKeys.Role);
+    var name = Context.Session.GetString(SessionKeys.Name);
+    var pic = Context.Session.GetString(SessionKeys.Picture);
+    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    string Active(params string[] names) => names.Contains(action) ? "active" : "";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - RaceDay</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg rd-nav navbar-dark">
+        <div class="container">
+            <a class="brand navbar-brand" asp-controller="Home" asp-action="Index"><i class="bi bi-lightning-charge-fill text-warning"></i> RACE<span>DAY</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"><span class="navbar-toggler-icon"></span></button>
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav me-auto">
+                    @if (role == "Organiser")
+                    {
+                        <li class="nav-item"><a class="nav-link @Active("Dashboard")" asp-controller="Organiser" asp-action="Dashboard"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link @Active("Events","CreateEvent","EditEvent")" asp-controller="Organiser" asp-action="Events"><i class="bi bi-calendar-event"></i> Events</a></li>
+                        <li class="nav-item"><a class="nav-link @Active("Categories")" asp-controller="Organiser" asp-action="Categories"><i class="bi bi-tags"></i> Categories</a></li>
+                        <li class="nav-item"><a class="nav-link @Active("Enrolments")" asp-controller="Organiser" asp-action="Enrolments"><i class="bi bi-people"></i> Enrolments</a></li>
+                        <li class="nav-item"><a class="nav-link @Active("Results")" asp-controller="Organiser" asp-action="Results"><i class="bi bi-stopwatch"></i> Results</a></li>
+                    }
+                    else if (role == "Participant")
+                    {
+                        <li class="nav-item"><a class="nav-link @Active("Home","Details")" asp-controller="Participant" asp-action="Home"><i class="bi bi-house"></i> Home</a></li>
+                        <li class="nav-item"><a class="nav-link @Active("MyEvents")" asp-controller="Participant" asp-action="MyEvents"><i class="bi bi-calendar-check"></i> My Events</a></li>
+                        <li class="nav-item"><a class="nav-link @Active("MyResults")" asp-controller="Participant" asp-action="MyResults"><i class="bi bi-trophy"></i> My Results</a></li>
+                    }
+                </ul>
+                <ul class="navbar-nav align-items-lg-center">
+                    @if (role != null)
+                    {
+                        <li class="nav-item me-lg-2">
+                            <a class="nav-link d-flex align-items-center gap-2 @Active("Profile")" asp-controller="Account" asp-action="Profile">
+                                @if (!string.IsNullOrEmpty(pic)) { <img src="@pic" class="avatar" alt="Profile picture" /> } else { <i class="bi bi-person-circle fs-4"></i> }
+                                <span>@name</span> <span class="role-pill">@role</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-light"><i class="bi bi-box-arrow-right"></i> Log out</button>
+                            </form>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item"><a class="nav-link @Active("Login")" asp-controller="Account" asp-action="Login">Log in</a></li>
+                        <li class="nav-item"><a class="btn btn-rd btn-sm ms-lg-2" asp-controller="Account" asp-action="Register">Register</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container py-4">
+        @if (TempData["Success"] is string ok)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert"><i class="bi bi-check-circle-fill"></i> @ok<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        }
+        @if ((TempData["Error"] ?? ViewData["Error"]) is string err)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert"><i class="bi bi-exclamation-triangle-fill"></i> @err<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer class="rd-footer py-3 mt-4">
+        <div class="container d-flex justify-content-between flex-wrap">
+            <span><strong>RaceDay</strong> - run, walk, ride.</span>
+            <span>PROG6212 POE Part 3</span>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

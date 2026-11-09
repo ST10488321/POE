@@ -1,0 +1,47 @@
+@model EventDetailsViewModel
+@{ var e = Model.Event; ViewData["Title"] = e.Name; }
+<a asp-action="Home" class="text-decoration-none"><i class="bi bi-arrow-left"></i> All events</a>
+<div class="row g-4 mt-1">
+    <div class="col-lg-8">
+        @if (!string.IsNullOrEmpty(e.BannerImageUrl)) { <img src="@e.BannerImageUrl" class="event-hero-img mb-3" alt="@e.Name banner" /> }
+        else { <div class="event-banner-placeholder mb-3" style="height:220px;border-radius:14px;font-size:6rem"><i class="bi @UiHelpers.TypeIcon(e.Type)"></i></div> }
+        <div class="d-flex gap-2 align-items-center mb-2"><span class="type-chip"><i class="bi @UiHelpers.TypeIcon(e.Type)"></i> @e.Type</span><partial name="_StatusBadge" model="e.Status" /></div>
+        <h1>@e.Name</h1>
+        <p class="lead">@e.Description</p>
+        <div class="row g-3">
+            <div class="col-sm-4"><div class="card p-3"><small class="text-muted">Date</small><strong>@e.EventDate.ToString("ddd, dd MMM yyyy")</strong><span>@e.EventDate.ToString("HH:mm")</span></div></div>
+            <div class="col-sm-4"><div class="card p-3"><small class="text-muted">Location</small><strong>@e.Location</strong></div></div>
+            <div class="col-sm-4"><div class="card p-3"><small class="text-muted">Distance</small><strong>@e.DistanceKm.ToString("0.##") km</strong></div></div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card p-3 mb-3">
+            <h3>Categories</h3>
+            @if (e.Categories is null || !e.Categories.Any()) { <p class="text-muted mb-0">No categories have been added yet.</p> }
+            else { <ul class="mb-0">@foreach (var c in e.Categories) { <li><strong>@c.Name</strong>@if (!string.IsNullOrEmpty(c.Description)) { <span class="text-muted"> - @c.Description</span> }</li> } </ul> }
+        </div>
+        <div class="card p-3">
+            <h3>Enter this event</h3>
+            @if (Model.Existing != null)
+            {
+                <p class="mb-2">You are entered in <strong>@Model.Existing.CategoryName</strong>.</p>
+                <p class="mb-0">Status: <partial name="_StatusBadge" model="Model.Existing.Status" /></p>
+            }
+            else if (e.Status != "Open") { <p class="text-muted mb-0">Enrolment is closed for this event.</p> }
+            else if (e.Categories is null || !e.Categories.Any()) { <p class="text-muted mb-0">The organiser has not added categories yet.</p> }
+            else
+            {
+                <form asp-action="Enrol" method="post">
+                    <input type="hidden" asp-for="Form.EventId" />
+                    <div class="mb-3"><label class="form-label">Choose your category</label>
+                        <select asp-for="Form.CategoryId" class="form-select" required>
+                            <option value="">Select...</option>
+                            @foreach (var c in e.Categories) { <option value="@c.Id">@c.Name</option> }
+                        </select></div>
+                    <div class="mb-3"><label class="form-label">Notes (optional)</label><input asp-for="Form.Notes" class="form-control" maxlength="500" /></div>
+                    <button class="btn btn-rd w-100" type="submit">Enter event</button>
+                </form>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+@model RegisterViewModel
+@{ ViewData["Title"] = "Register"; }
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card p-4">
+            <h2 class="mb-3">Create your account</h2>
+            <form asp-action="Register" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+                <div class="mb-3"><label asp-for="Name" class="form-label"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger small"></span></div>
+                <div class="mb-3"><label asp-for="Email" class="form-label"></label><input asp-for="Email" class="form-control" /><span asp-validation-for="Email" class="text-danger small"></span></div>
+                <div class="row">
+                    <div class="col-md-6 mb-3"><label asp-for="Password" class="form-label"></label><input asp-for="Password" class="form-control" /><span asp-validation-for="Password" class="text-danger small"></span></div>
+                    <div class="col-md-6 mb-3"><label asp-for="ConfirmPassword" class="form-label"></label><input asp-for="ConfirmPassword" class="form-control" /><span asp-validation-for="ConfirmPassword" class="text-danger small"></span></div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">I am a...</label>
+                    <select asp-for="Role" class="form-select" id="roleSelect">
+                        <option value="Participant">Participant - I want to enter events</option>
+                        <option value="Organiser">Organiser - I run events</option>
+                    </select>
+                </div>
+                <div class="mb-3" id="codeBox" style="display:none">
+                    <label asp-for="OrganiserCode" class="form-label"></label>
+                    <input asp-for="OrganiserCode" class="form-control" autocomplete="off" />
+                    <div class="form-text">Organiser accounts need the secret code from the RaceDay administrator.</div>
+                    <span asp-validation-for="OrganiserCode" class="text-danger small"></span>
+                </div>
+                <button class="btn btn-rd w-100" type="submit">Register</button>
+            </form>
+            <p class="mt-3 mb-0 text-center">Already registered? <a asp-action="Login">Log in</a></p>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        const sel = document.getElementById('roleSelect'), box = document.getElementById('codeBox');
+        function toggle() { box.style.display = sel.value === 'Organiser' ? 'block' : 'none'; }
+        sel.addEventListener('change', toggle); toggle();
+    </script>
+}

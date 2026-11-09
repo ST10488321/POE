@@ -1,0 +1,25 @@
+@model ParticipantHomeViewModel
+@{ ViewData["Title"] = "Upcoming events"; }
+<h1 class="page-title">Upcoming events</h1>
+<form method="get" asp-action="Home" class="card p-3 mb-4">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-4"><label class="form-label small mb-1">Search</label><input name="search" value="@Model.Search" class="form-control" placeholder="Event name or location" /></div>
+        <div class="col-md-3"><label class="form-label small mb-1">Type</label>
+            <select name="type" class="form-select">
+                <option value="">All types</option>
+                @foreach (var t in new[] { "Run", "Walk", "Cycle" }) { <option value="@t" selected="@(Model.Type == t)">@t</option> }
+            </select></div>
+        <div class="col-md-3"><label class="form-label small mb-1">Date</label><input type="date" name="date" value="@(Model.Date?.ToString("yyyy-MM-dd"))" class="form-control" /></div>
+        <div class="col-md-2 d-flex gap-2"><button class="btn btn-rd flex-fill" type="submit"><i class="bi bi-funnel"></i> Filter</button><a class="btn btn-outline-rd" asp-action="Home" title="Clear filters"><i class="bi bi-x-lg"></i></a></div>
+    </div>
+</form>
+@if (!Model.Events.Any())
+{
+    <div class="card p-5 text-center text-muted"><i class="bi bi-calendar-x" style="font-size:3rem"></i><p class="mb-0 mt-2">No upcoming events match your filters.</p></div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var e in Model.Events) { <div class="col-md-6 col-lg-4"><partial name="_EventCard" model="e" /></div> }
+    </div>
+}

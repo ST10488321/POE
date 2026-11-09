@@ -1,0 +1,35 @@
+@model EnrolmentsPageViewModel
+@{ ViewData["Title"] = "Enrolments"; }
+<h1 class="page-title">Enrolments - @Model.Event.Name</h1>
+@if (!Model.Enrolments.Any())
+{
+    <div class="card p-4 text-center text-muted">No participants have enrolled yet.</div>
+}
+else
+{
+    <div class="card p-2"><div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+        <thead><tr><th>Participant</th><th>Category</th><th>Enrolled</th><th>Notes</th><th>Status</th><th>Change status</th></tr></thead>
+        <tbody>
+        @foreach (var e in Model.Enrolments)
+        {
+            <tr>
+                <td><strong>@e.ParticipantName</strong></td>
+                <td>@e.CategoryName</td>
+                <td>@e.EnrolledAt.ToString("dd MMM yyyy")</td>
+                <td>@e.Notes</td>
+                <td><partial name="_StatusBadge" model="e.Status" /></td>
+                <td>
+                    <form asp-action="UpdateEnrolmentStatus" asp-route-id="@e.Id" asp-route-eventId="@Model.Event.Id" method="post" class="d-flex gap-2">
+                        <select name="status" class="form-select form-select-sm" style="width:130px">
+                            @foreach (var s in new[] { "Pending", "Confirmed", "Cancelled" }) { <option value="@s" selected="@(s == e.Status)">@s</option> }
+                        </select>
+                        <button class="btn btn-sm btn-rd" type="submit">Update</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table></div></div>
+}
+<a class="btn btn-outline-rd mt-3" asp-action="Events">Back to events</a>

@@ -1,0 +1,44 @@
+@model List<EventModel>
+@{ ViewData["Title"] = "My events"; }
+<div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+    <h1 class="page-title mb-0">Manage events</h1>
+    <a class="btn btn-rd" asp-action="CreateEvent"><i class="bi bi-plus-lg"></i> New event</a>
+</div>
+@if (!Model.Any())
+{
+    <div class="card p-4 text-center text-muted">You have not created any events yet.</div>
+}
+else
+{
+    <div class="card p-2">
+    <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+        <thead><tr><th></th><th>Event</th><th>Type</th><th>Date</th><th>Location</th><th>Distance</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var e in Model)
+        {
+            <tr>
+                <td style="width:90px">
+                    @if (!string.IsNullOrEmpty(e.BannerImageUrl)) { <img src="@e.BannerImageUrl" alt="Banner" style="width:80px;height:50px;object-fit:cover;border-radius:6px" /> }
+                    else { <div class="event-banner-placeholder" style="width:80px;height:50px;font-size:1.6rem;border-radius:6px"><i class="bi @UiHelpers.TypeIcon(e.Type)"></i></div> }
+                </td>
+                <td><strong>@e.Name</strong><br /><small class="text-muted">@e.EnrolmentCount enrolled</small></td>
+                <td><span class="type-chip">@e.Type</span></td>
+                <td>@e.EventDate.ToString("dd MMM yyyy HH:mm")</td>
+                <td>@e.Location</td>
+                <td>@e.DistanceKm.ToString("0.##") km</td>
+                <td><partial name="_StatusBadge" model="e.Status" /></td>
+                <td class="text-end text-nowrap">
+                    <a class="btn btn-sm btn-outline-rd" asp-action="EditEvent" asp-route-id="@e.Id"><i class="bi bi-pencil"></i> Edit</a>
+                    <a class="btn btn-sm btn-outline-rd" asp-action="Categories" asp-route-id="@e.Id"><i class="bi bi-tags"></i></a>
+                    <form asp-action="DeleteEvent" asp-route-id="@e.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this event and all its enrolments and results?');">
+                        <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    </div>
+    </div>
+}

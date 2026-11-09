@@ -1,0 +1,26 @@
+@model List<ResultModel>
+@{ ViewData["Title"] = "My results"; }
+<h1 class="page-title">My results</h1>
+@if (!Model.Any())
+{
+    <div class="card p-5 text-center text-muted"><i class="bi bi-trophy" style="font-size:3rem"></i><p class="mb-0 mt-2">No results yet. Results appear here after an organiser publishes them.</p></div>
+}
+else
+{
+    <div class="card p-2"><div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+        <thead><tr><th>Event</th><th>Date</th><th>Category</th><th>Finish time</th><th>Position</th></tr></thead>
+        <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td><strong>@r.EventName</strong></td>
+                <td>@r.EventDate.ToString("dd MMM yyyy")</td>
+                <td>@r.CategoryName</td>
+                <td class="fw-bold">@UiHelpers.Time(r.FinishTime)</td>
+                <td><span class="position-badge">@UiHelpers.Ordinal(r.Position)</span> <span class="text-muted">out of @r.TotalFinishers finishers</span></td>
+            </tr>
+        }
+        </tbody>
+    </table></div></div>
+}

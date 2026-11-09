@@ -1,0 +1,24 @@
+@model ProfileViewModel
+@{ ViewData["Title"] = "My profile"; }
+<h1 class="page-title">My profile</h1>
+<div class="card p-4">
+    <form asp-action="Profile" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+        <div class="row g-4">
+            <div class="col-md-4 text-center">
+                @if (!string.IsNullOrEmpty(Model.ProfileImageUrl)) { <img src="@Model.ProfileImageUrl" class="avatar avatar-lg mb-3" alt="Profile picture" /> }
+                else { <i class="bi bi-person-circle" style="font-size:7rem;color:var(--rd-grey)"></i> }
+                <div class="mb-2"><span class="role-pill">@Model.Role</span></div>
+                <label asp-for="Picture" class="form-label"></label>
+                <input asp-for="Picture" type="file" accept="image/png,image/jpeg,image/webp" class="form-control" />
+                <div class="form-text">JPG, PNG or WEBP, up to 5 MB.</div>
+            </div>
+            <div class="col-md-8">
+                <div class="mb-3"><label asp-for="Name" class="form-label"></label><input asp-for="Name" class="form-control" /><span asp-validation-for="Name" class="text-danger small"></span></div>
+                <div class="mb-3"><label asp-for="Email" class="form-label"></label><input asp-for="Email" class="form-control" /><span asp-validation-for="Email" class="text-danger small"></span></div>
+                <div class="mb-3"><label asp-for="NewPassword" class="form-label"></label><input asp-for="NewPassword" class="form-control" autocomplete="new-password" /><span asp-validation-for="NewPassword" class="text-danger small"></span></div>
+                <button class="btn btn-rd" type="submit">Save changes</button>
+            </div>
+        </div>
+    </form>
+</div>
