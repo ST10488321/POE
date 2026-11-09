@@ -8,7 +8,7 @@ RaceDay is a platform for running, walking and cycling events.
 - **GitHub Actions** - builds everything, runs the tests and checks that the Docker image builds.
 
 ## Video demonstration
-YouTube (unlisted): **PASTE LINK HERE**
+YouTube (unlisted): https://youtu.be/OV_-RRt2OEw 
 
 ## Project structure
 ```
